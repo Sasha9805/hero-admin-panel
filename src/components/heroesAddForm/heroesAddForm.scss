@@ -1,0 +1,8 @@
+.heroes__add-form {
+    &-textarea {
+        height: 130px;
+    }
+    &_error {
+        color: #9F0013;
+    }
+}

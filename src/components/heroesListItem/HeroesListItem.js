@@ -1,28 +1,19 @@
+import classNames from "classnames";
 
-const HeroesListItem = ({name, description, element}) => {
+import './heroesListItem.scss';
 
-    let elementClassName;
-
-    switch (element) {
-        case 'fire':
-            elementClassName = 'bg-danger bg-gradient';
-            break;
-        case 'water':
-            elementClassName = 'bg-primary bg-gradient';
-            break;
-        case 'wind':
-            elementClassName = 'bg-success bg-gradient';
-            break;
-        case 'earth':
-            elementClassName = 'bg-secondary bg-gradient';
-            break;
-        default:
-            elementClassName = 'bg-warning bg-gradient';
-    }
-
+const HeroesListItem = ({name, description, element, onDeleteHero, nodeRef}) => {
     return (
         <li 
-            className={`card flex-row mb-4 shadow-lg text-white ${elementClassName}`}>
+            ref={nodeRef}
+            className={classNames(
+                "heroes__list-item card flex-row mb-4 shadow-lg text-white bg-gradient",
+                {"bg-warning": element === 'all'},
+                {"bg-danger": element === 'fire'},
+                {"bg-primary": element === 'water'},
+                {"bg-success": element === 'wind'},
+                {"bg-secondary": element === 'earth'}
+            )}>
             <img src="http://www.stpaulsteinbach.org/wp-content/uploads/2014/09/unknown-hero.jpg" 
                  className="img-fluid w-25 d-inline" 
                  alt="unknown hero" 
@@ -32,7 +23,7 @@ const HeroesListItem = ({name, description, element}) => {
                 <h3 className="card-title">{name}</h3>
                 <p className="card-text">{description}</p>
             </div>
-            <span className="position-absolute top-0 start-100 translate-middle badge border rounded-pill bg-light">
+            <span onClick={onDeleteHero} className="position-absolute top-0 start-100 translate-middle badge border rounded-pill bg-light">
                 <button type="button" className="btn-close btn-close" aria-label="Close"></button>
             </span>
         </li>

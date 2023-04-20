@@ -1,0 +1,16 @@
+.heroes__list {
+    &-not-found-enter {
+        opacity: 0;
+    }
+    &-not-found-enter-active {
+        opacity: 1;
+        transition: opacity 0ms ease-in-out;
+    }
+    &-not-found-exit {
+        opacity: 1;
+    }
+    &-not-found-exit-active {
+        opacity: 0;
+        transition: opacity 0ms ease-in-out;
+    }
+}

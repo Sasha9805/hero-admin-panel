@@ -1,11 +1,11 @@
-import { useEffect, createRef } from "react";
+import { createRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { string, object } from "yup";
 import { v4 as uuidv4 } from 'uuid';
 
 import { useHttp } from "../../hooks/http.hook";
-import { heroAdd, filtersFetched, filtersFetching, filtersFetchingError } from "../../actions";
+import { heroAdd } from "../../actions";
 import Spinner from "../spinner/Spinner";
 
 import './heroesAddForm.scss';
@@ -23,16 +23,8 @@ import './heroesAddForm.scss';
 const HeroesAddForm = () => {
     const { request } = useHttp();
 
-    const filters = useSelector(state => state.filters);
-    const filtersLoadingStatus = useSelector(state => state.filtersLoadingStatus);
+    const { filters, filtersLoadingStatus } = useSelector(state => state.filters);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(filtersFetching());
-        request('http://localhost:3001/filters')
-            .then((filters) => dispatch(filtersFetched(filters)))
-            .catch(err => dispatch(filtersFetchingError()));
-    }, []);
 
     const onSubmit = ({ name, text, element }, { setSubmitting, resetForm }) => {
         const newHero = {

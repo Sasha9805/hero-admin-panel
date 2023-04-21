@@ -1,5 +1,6 @@
 import { useEffect, useCallback, createRef, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
@@ -14,10 +15,29 @@ import './heroesList.scss';
 // Усложненная задача:
 // Удаление идет и с json файла при помощи метода DELETE
 
+const filteredHeroesSelector = createSelector(
+    state => state.filters.activeFilter,
+    state => state.heroes.heroes,
+    (activeFilter, heroes) => {
+        if (activeFilter === 'all') {
+            return heroes;
+        }
+        return heroes.filter(item => item.element === activeFilter);
+    }
+);
+
 const HeroesList = () => {
     const { request } = useHttp();
 
-    const { heroes, heroesLoadingStatus, activeFilter } = useSelector(state => state);
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+    // const filteredHeroes = useSelector(state => {
+    //     if (state.filters.activeFilter === 'all') {
+    //         return state.heroes.heroes;
+    //     }
+    //     return state.heroes.heroes.filter(item => item.element === state.filters.activeFilter);
+    // }, shallowEqual);
+
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
 
     const notFoundRef = useRef(null);
@@ -49,13 +69,6 @@ const HeroesList = () => {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
-    const filterHeroesList = (arr, activeFilter) => {
-        if (activeFilter === 'all') {
-            return arr;
-        }
-        return arr.filter(hero => hero.element === activeFilter);
-    };
-
     const renderHeroesList = (arr) => {
         return (
             <TransitionGroup appear={true} component={null}>
@@ -85,7 +98,7 @@ const HeroesList = () => {
         )
     }
 
-    const elements = renderHeroesList(filterHeroesList(heroes, activeFilter));
+    const elements = renderHeroesList(filteredHeroes);
     return (
         <ul>
             {elements}

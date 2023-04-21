@@ -17,9 +17,7 @@ import Spinner from "../spinner/Spinner";
 const HeroesFilters = () => {
     const { request } = useHttp();
 
-    const filters = useSelector(state => state.filters);
-    const filtersLoadingStatus = useSelector(state => state.filtersLoadingStatus);
-    const activeFilter = useSelector(state => state.activeFilter);
+    const { filters, filtersLoadingStatus, activeFilter } = useSelector(state => state.filters);
     const dispatch = useDispatch();
 
     useEffect(() => {

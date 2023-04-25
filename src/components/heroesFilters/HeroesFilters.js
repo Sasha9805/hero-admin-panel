@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 
 import { useHttp } from "../../hooks/http.hook";
-import { filterChange, filtersFetched, filtersFetching, filtersFetchingError } from "../../actions";
+import { fetchFilters, filterChange } from "../../actions";
 
 import Spinner from "../spinner/Spinner";
 
@@ -21,10 +21,7 @@ const HeroesFilters = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(filtersFetching());
-        request('http://localhost:3001/filters')
-            .then((filters) => dispatch(filtersFetched(filters)))
-            .catch(err => dispatch(filtersFetchingError()));
+        dispatch(fetchFilters(request));
     }, []);
 
     const onFilterChange = useCallback((activeFilter) => {

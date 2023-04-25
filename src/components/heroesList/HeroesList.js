@@ -1,4 +1,4 @@
-import { useEffect, useCallback, createRef, useRef } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -6,7 +6,7 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import { useHttp } from '../../hooks/http.hook';
-import { heroesFetching, heroesFetched, heroesFetchingError, heroDelete } from '../../actions';
+import { heroDelete, fetchHeroes } from '../../actions';
 
 import './heroesList.scss';
 
@@ -43,17 +43,7 @@ const HeroesList = () => {
     const notFoundRef = useRef(null);
     
     useEffect(() => {
-        dispatch(heroesFetching());
-        request("http://localhost:3001/heroes")
-            .then(data => {
-                const newData = data.map(hero => ({
-                    ...hero,
-                    nodeRef: createRef(null),
-                }));
-                dispatch(heroesFetched(newData))
-            })
-            .catch(() => dispatch(heroesFetchingError()))
-
+        dispatch(fetchHeroes(request));
         // eslint-disable-next-line
     }, []);
 

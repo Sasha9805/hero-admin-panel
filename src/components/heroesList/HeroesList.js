@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, createRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -19,10 +19,14 @@ const filteredHeroesSelector = createSelector(
     state => state.filters.activeFilter,
     state => state.heroes.heroes,
     (activeFilter, heroes) => {
+        const newHeroes = heroes.map(hero => ({
+            ...hero,
+            nodeRef: createRef(null),
+        }));
         if (activeFilter === 'all') {
-            return heroes;
+            return newHeroes;
         }
-        return heroes.filter(item => item.element === activeFilter);
+        return newHeroes.filter(item => item.element === activeFilter);
     }
 );
 

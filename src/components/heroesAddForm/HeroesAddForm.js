@@ -1,4 +1,3 @@
-import { createRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { string, object } from "yup";
@@ -35,7 +34,7 @@ const HeroesAddForm = () => {
         };
         request(`http://localhost:3001/heroes`, 'POST', JSON.stringify(newHero))
             .then(data => {
-                dispatch(heroAdd({...data, nodeRef: createRef(null)}));
+                dispatch(heroAdd(data));
                 resetForm();
             })
             .catch(err => console.log(err))

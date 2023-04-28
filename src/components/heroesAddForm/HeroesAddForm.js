@@ -4,7 +4,7 @@ import { string, object } from "yup";
 import { v4 as uuidv4 } from 'uuid';
 
 import { useHttp } from "../../hooks/http.hook";
-import { heroAdd } from "../../actions";
+import { heroAdd } from "../heroesList/heroesSlice";
 import Spinner from "../spinner/Spinner";
 
 import './heroesAddForm.scss';

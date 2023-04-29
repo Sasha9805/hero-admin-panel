@@ -2,9 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 
-import { useHttp } from "../../hooks/http.hook";
-import { fetchFilters } from "../../actions";
-import { filterChange } from "./filtersSlice";
+import { fetchFilters, filterChange } from "./filtersSlice";
 
 import Spinner from "../spinner/Spinner";
 
@@ -16,13 +14,12 @@ import Spinner from "../spinner/Spinner";
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 const HeroesFilters = () => {
-    const { request } = useHttp();
 
     const { filters, filtersLoadingStatus, activeFilter } = useSelector(state => state.filters);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchFilters(request));
+        dispatch(fetchFilters());
     }, []);
 
     const onFilterChange = useCallback((activeFilter) => {

@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classNames from "classnames";
 
-import { fetchFilters, filterChange } from "./filtersSlice";
+import { fetchFilters, filterChange, selectAll } from "./filtersSlice";
 
 import Spinner from "../spinner/Spinner";
 
@@ -15,7 +15,8 @@ import Spinner from "../spinner/Spinner";
 
 const HeroesFilters = () => {
 
-    const { filters, filtersLoadingStatus, activeFilter } = useSelector(state => state.filters);
+    const filters = useSelector(selectAll);
+    const { filtersLoadingStatus, activeFilter } = useSelector(state => state.filters);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -37,10 +38,10 @@ const HeroesFilters = () => {
     }
 
     const renderFilters = (arr, activeFilter) => {
-        return arr.map(({ value, text }) => {
+        return arr.map(({ id, value, text }) => {
             return (
                 <button
-                    key={value} 
+                    key={id} 
                     className={classNames(
                         "btn",
                         {"btn-outline-dark": value === 'all'},

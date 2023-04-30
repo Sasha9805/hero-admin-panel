@@ -1,12 +1,11 @@
-import { useEffect, useCallback, useRef, createRef } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { createSelector } from "@reduxjs/toolkit";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import { useHttp } from '../../hooks/http.hook';
-import { fetchHeroes, heroDelete } from "./heroesSlice";
+import { fetchHeroes, heroDelete, filteredHeroesSelector } from "./heroesSlice";
 
 import './heroesList.scss';
 
@@ -14,21 +13,6 @@ import './heroesList.scss';
 // При клике на "крестик" идет удаление персонажа из общего состояния
 // Усложненная задача:
 // Удаление идет и с json файла при помощи метода DELETE
-
-const filteredHeroesSelector = createSelector(
-    state => state.filters.activeFilter,
-    state => state.heroes.heroes,
-    (activeFilter, heroes) => {
-        const newHeroes = heroes.map(hero => ({
-            ...hero,
-            nodeRef: createRef(null),
-        }));
-        if (activeFilter === 'all') {
-            return newHeroes;
-        }
-        return newHeroes.filter(item => item.element === activeFilter);
-    }
-);
 
 const HeroesList = () => {
     const { request } = useHttp();

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useHttp } from "../../hooks/http.hook";
 import { heroAdd } from "../heroesList/heroesSlice";
+import { selectAll } from "../heroesFilters/filtersSlice";
 import Spinner from "../spinner/Spinner";
 
 import './heroesAddForm.scss';
@@ -22,7 +23,8 @@ import './heroesAddForm.scss';
 const HeroesAddForm = () => {
     const { request } = useHttp();
 
-    const { filters, filtersLoadingStatus } = useSelector(state => state.filters);
+    const filters = useSelector(selectAll);
+    const { filtersLoadingStatus } = useSelector(state => state.filters);
     const dispatch = useDispatch();
 
     const onSubmit = ({ name, text, element }, { setSubmitting, resetForm }) => {
@@ -52,11 +54,11 @@ const HeroesAddForm = () => {
     }
 
     const renderOptions = (arr) => {
-        return arr.map(({ value, text }) => {
+        return arr.map(({ id, value, text }) => {
             if (value === 'all') {
-                return <option key={value} value="">Я владею элементом...</option>;
+                return <option key={id} value="">Я владею элементом...</option>;
             }
-            return <option key={value} value={value}>{text}</option>
+            return <option key={id} value={value}>{text}</option>
         });
     };
     const options = renderOptions(filters);

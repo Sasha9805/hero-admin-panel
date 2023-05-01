@@ -1,10 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { string, object } from "yup";
 import { v4 as uuidv4 } from 'uuid';
 
-import { useHttp } from "../../hooks/http.hook";
-import { heroAdd } from "../heroesList/heroesSlice";
+import { useCreateHeroMutation } from "../../api/apiSlice";
 import { selectAll } from "../heroesFilters/filtersSlice";
 import Spinner from "../spinner/Spinner";
 
@@ -21,11 +20,11 @@ import './heroesAddForm.scss';
 // данных из фильтров
 
 const HeroesAddForm = () => {
-    const { request } = useHttp();
+
+    const [createHero] = useCreateHeroMutation();
 
     const filters = useSelector(selectAll);
     const { filtersLoadingStatus } = useSelector(state => state.filters);
-    const dispatch = useDispatch();
 
     const onSubmit = ({ name, text, element }, { setSubmitting, resetForm }) => {
         const newHero = {
@@ -34,13 +33,13 @@ const HeroesAddForm = () => {
             description: text,
             element
         };
-        request(`http://localhost:3001/heroes`, 'POST', JSON.stringify(newHero))
-            .then(data => {
-                dispatch(heroAdd(data));
-                resetForm();
-            })
+        createHero(newHero)
+            .unwrap()
             .catch(err => console.log(err))
-            .finally(() => setSubmitting(false));
+            .finally(() => {
+                setSubmitting(false);
+                resetForm();
+            });
     };
 
     if (filtersLoadingStatus === "loading") {

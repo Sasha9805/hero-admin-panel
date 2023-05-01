@@ -1,11 +1,10 @@
-import { useEffect, useCallback, useRef } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useCallback, useRef, useMemo, createRef } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
-import { useHttp } from '../../hooks/http.hook';
-import { fetchHeroes, heroDelete, filteredHeroesSelector } from "./heroesSlice";
+import { useGetHeroesQuery, useDeleteHeroMutation } from "../../api/apiSlice";
 
 import './heroesList.scss';
 
@@ -15,9 +14,28 @@ import './heroesList.scss';
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-    const { request } = useHttp();
 
-    const filteredHeroes = useSelector(filteredHeroesSelector);
+    const {
+        data: heroes = [],
+        isLoading,
+        isError,
+    } = useGetHeroesQuery();
+
+    const [deleteHero] = useDeleteHeroMutation();
+
+    const activeFilter = useSelector(state => state.filters.activeFilter);
+    const filteredHeroes = useMemo(() => {
+        const newHeroes = heroes.map(hero => ({
+            ...hero,
+            nodeRef: createRef(null),
+        }));
+        if (activeFilter === 'all') {
+            return newHeroes;
+        }
+        return newHeroes.filter(item => item.element === activeFilter);
+    }, [heroes, activeFilter]);
+
+    // const filteredHeroes = useSelector(filteredHeroesSelector);
     // const filteredHeroes = useSelector(state => {
     //     if (state.filters.activeFilter === 'all') {
     //         return state.heroes.heroes;
@@ -25,25 +43,15 @@ const HeroesList = () => {
     //     return state.heroes.heroes.filter(item => item.element === state.filters.activeFilter);
     // }, shallowEqual);
 
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
-    const dispatch = useDispatch();
-
     const notFoundRef = useRef(null);
-    
-    useEffect(() => {
-        dispatch(fetchHeroes());
-        // eslint-disable-next-line
-    }, []);
 
     const onDeleteHero = useCallback((id) => {
-        request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-            .then(() => dispatch(heroDelete(id)))
-            .catch(err => console.log(err));
-    }, [dispatch, request]);
+        deleteHero(id);
+    }, []);
 
-    if (heroesLoadingStatus === "loading") {
+    if (isLoading) {
         return <Spinner/>;
-    } else if (heroesLoadingStatus === "error") {
+    } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
